@@ -6,33 +6,54 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import sys
 
-password_provided = input('password: ')
-password = password_provided.encode()
+x = 1
 
-salt = b'\x94u\xd6\x9cZ\xd2\x87\xde\x98+I\xaa&}\x1a$'
+while x==1:
+    hash_ = input('\ndecrypt: ')
+    hash_bytes = hash_.encode()
 
-kdf = PBKDF2HMAC(
-    algorithm=hashes.SHA256(),
-    length=32,
-    salt=salt,
-    iterations=100000,
-    backend=default_backend()
-)
+    password_provided = input('password: ')
+    password = password_provided.encode()
 
-key = base64.urlsafe_b64encode(kdf.derive(password))
+    salt = b'\x94u\xd6\x9cZ\xd2\x87\xde\x98+I\xaa&}\x1a$'
 
-hash_ = input('decrypt: ')
-hash_bytes = hash_.encode()
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=100000,
+        backend=default_backend()
+    )
 
-try:
-    f = Fernet(key)
-    decrypted = f.decrypt(hash_bytes)
-except:
-    print('wrong password!')
-    input('press enter to exit ')
-    sys.exit()
+    key = base64.urlsafe_b64encode(kdf.derive(password))
 
-print(decrypted)
+    try:
+        f = Fernet(key)
+        decrypted = f.decrypt(hash_bytes)
+    except:
+        print('wrong password!')
+        answer = None
+        while answer not in('y', 'n'):
+            answer = input('Continue (y/n): ')
+            if answer == 'y':
+                x = 1
+            elif answer == 'n':
+                sys.exit()
+            else:
+                print('type y for yes or n for no\n')
 
-input('press enter to exit ')
-sys.exit()
+    decrypted = decrypted.decode('utf-8')
+
+    print('\nDone: ' + decrypted + '\n')
+
+    x = 2
+
+    answer = None
+    while answer not in('y', 'n'):
+        answer = input('Continue (y/n): ')
+        if answer == 'y':
+            x = 1
+        elif answer == 'n':
+            sys.exit()
+        else:
+            print('type y for yes or n for no\n')

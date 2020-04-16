@@ -6,28 +6,40 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import sys
 
-password_provided = input('password: ')
-password = password_provided.encode()
+x = 1
 
-salt = b'\x94u\xd6\x9cZ\xd2\x87\xde\x98+I\xaa&}\x1a$'
+while x==1: 
+    messege = input('\nencrypt: ')
+    messege_encoded = messege.encode()
 
-kdf = PBKDF2HMAC(
-    algorithm=hashes.SHA256(),
-    length=32,
-    salt=salt,
-    iterations=100000,
-    backend=default_backend()
-)
+    password_provided = input('create password: ')
+    password = password_provided.encode() 
 
-key = base64.urlsafe_b64encode(kdf.derive(password))
+    salt = b'\x94u\xd6\x9cZ\xd2\x87\xde\x98+I\xaa&}\x1a$'
 
-messege = input('encrypt: ')
-messege_encoded = messege.encode()
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=100000,
+        backend=default_backend()
+    )
 
-f = Fernet(key)
-encrypted = f.encrypt(messege_encoded)
-done = str(encrypted, 'utf-8')
-print('Done: ' + done)
+    key = base64.urlsafe_b64encode(kdf.derive(password))
 
-input('press enter to exit')
-sys.exit()
+    f = Fernet(key)
+    encrypted = f.encrypt(messege_encoded)
+    done = str(encrypted, 'utf-8')
+    print('\nDone: ' + done + '\n')
+
+    x = 2
+
+    answer = None
+    while answer not in('y', 'n'):
+        answer = input('Continue (y/n): ')
+        if answer == 'y':
+            x = 1
+        elif answer == 'n':
+            sys.exit()
+        else:
+            print('type y for yes or n for no\n')
