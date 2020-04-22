@@ -23,7 +23,7 @@ while x==0:
 password_prov = input('create password: ')
 password = password_prov.encode()
 
-salt = b'\x13\xab3\x7f}\xae\xf0\x8aiN\x94\xec\xe1\x8c,j'
+salt = "YOUR SALT HERE"
 kdf = PBKDF2HMAC(
     algorithm=hashes.SHA256(),
     length=32,
